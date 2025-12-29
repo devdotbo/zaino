@@ -57,6 +57,7 @@ message PaginatedTxidsResponse {
     uint64 blockHeight = 2;          // Height where tx was mined (for cursor)
     uint32 txIndex = 3;              // Index within block
     uint64 totalCount = 4;           // Total transactions matching query (first response only)
+    bytes txid = 5;                  // Transaction ID (32 bytes, little-endian)
 }
 ```
 
@@ -98,18 +99,20 @@ grpcurl -plaintext \
     "height": "3757408"
   },
   "blockHeight": "3757408",
-  "totalCount": "10543"
+  "totalCount": "10543",
+  "txid": "r9cTEgVy6AIkJOJ/d2hwiO8b4QoLcMk6tKM5xQzcBnk="
 }
 {
   "transaction": {
     "data": "BQAAgAo...",
     "height": "3757407"
   },
-  "blockHeight": "3757407"
+  "blockHeight": "3757407",
+  "txid": "g3FjG0myegCrsZ3xnPN3n75q2YDJQAtY0glNg3q4IYQ="
 }
 ```
 
-Note: `totalCount` is only included in the first response.
+Note: `totalCount` is only included in the first response. `txid` is base64-encoded (32 bytes, little-endian).
 
 ## Cursor-Based Pagination
 
@@ -165,7 +168,8 @@ while let Some(response) = stream.message().await? {
         total_count = response.total_count;
         println!("Total transactions: {}", total_count);
     }
-    println!("TX at height {}: {:?}", response.block_height, response.transaction);
+    let txid_hex = hex::encode(&response.txid);
+    println!("TX {} at height {}", txid_hex, response.block_height);
 }
 ```
 
@@ -202,6 +206,7 @@ grpc_tools_node_protoc --js_out=. --grpc_out=. service.proto
 | `blockHeight` | uint64 | Block height where transaction was mined |
 | `txIndex` | uint32 | Transaction index within the block |
 | `totalCount` | uint64 | Total matching transactions (first response only, 0 otherwise) |
+| `txid` | bytes | Transaction ID (32 bytes, little-endian) |
 
 ## Compatibility
 

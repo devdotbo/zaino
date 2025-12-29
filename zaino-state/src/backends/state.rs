@@ -1781,6 +1781,7 @@ impl LightWalletIndexer for StateServiceSubscriber {
                 async {
                     let mut is_first = true;
                     for txid in txids {
+                        let txid_bytes = hex::decode(&txid).unwrap_or_default();
                         let transaction = service_clone.get_raw_transaction(txid, Some(1)).await;
                         match transaction {
                             Ok(GetRawTransaction::Object(tx_obj)) => {
@@ -1793,6 +1794,7 @@ impl LightWalletIndexer for StateServiceSubscriber {
                                     block_height: height as u64,
                                     tx_index: 0,
                                     total_count: if is_first { total_count } else { 0 },
+                                    txid: txid_bytes,
                                 };
                                 is_first = false;
                                 if transmitter.send(Ok(response)).await.is_err() {

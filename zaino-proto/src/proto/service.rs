@@ -286,6 +286,9 @@ pub struct PaginatedTxidsResponse {
     /// Total transactions matching query (only in first response)
     #[prost(uint64, tag = "4")]
     pub total_count: u64,
+    /// Transaction ID (32 bytes, little-endian)
+    #[prost(bytes = "vec", tag = "5")]
+    pub txid: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

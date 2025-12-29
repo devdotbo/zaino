@@ -195,6 +195,7 @@ message PaginatedTxidsResponse {
     uint64 blockHeight = 2;          // Height where tx was mined (for cursor)
     uint32 txIndex = 3;              // Index within block
     uint64 totalCount = 4;           // Total transactions matching query (only in first response)
+    bytes txid = 5;                  // Transaction ID (32 bytes, little-endian)
 }
 
 service CompactTxStreamer {
